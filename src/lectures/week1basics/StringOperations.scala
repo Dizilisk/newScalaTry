@@ -1,5 +1,7 @@
 package lectures.week1basics
 
+import scala.annotation.tailrec
+
 object StringOperations extends App {
   val aString: String = "Hello, world!"
 
@@ -25,21 +27,24 @@ object StringOperations extends App {
   println(s"The link is ${link.toUpperCase}")
 
   val x = "I like     Scala"
-  val y = x.length
   val x1 = x.split(" ").toList
-  val x2 = x1.reverse
+  val y = x1.length
+  println(x1)
+  println(y)
 
-
-  def line(b: List[String]): String = {
-    def erase(a: Int, acc: String): String = {
+  def line(b: List[String]): List[String] = {
+    @tailrec
+    def erase(a: Int, acc: List[String]): List[String] = {
       if (a == 0) {
-        acc
+        acc.filter(_ != "")
       } else {
-        erase(a - 1, acc))
+        erase(a - 1, acc.map{x => x.replace(" ", "-")})
       }
-      erase(line(b))
     }
-    line(erase(y, x))
+    erase(y, b)
   }
+  println(line(x1))
+  val x2 = line(x1).reverse
   val x3 = line(x2).mkString(" ")
+  println(x3)
 }
