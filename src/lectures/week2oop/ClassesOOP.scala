@@ -5,7 +5,6 @@ object ClassesOOP extends App {
   println(student.name)
 //  student.uni
 
-
   class Student(id: Int, val name: String) {
     val uni = "University"
     println("Student class")
@@ -24,7 +23,6 @@ object ClassesOOP extends App {
   val student2 = new Student1(1, "Sam")
   println(student2.getID("Pam", 2))
   println(student2.getID)
-
 
   class Student2(id: Int, val name: String) {
     def this(name: String) = this(0, name)
@@ -46,4 +44,38 @@ object ClassesOOP extends App {
 
   val employee = new Employee()
   println(s"${employee.name}'s salary is ${employee.salary}")
+
+  val instructor1 = new Instructor(1, "john", "sina")
+  val instructor2 = new Instructor(2, "vova", "vist")
+  val course = new Course(3, "kurs", "1", instructor1)
+  val course1 = new Course(5, "kurs1", "15", instructor2)
+
+  class Instructor(val id: Int, name: String, surname: String) {
+    val checkName: String = (name.toLowerCase.take(1).toUpperCase) ++ (name.toLowerCase.substring(1, name.length))
+    val checkSurname: String = (surname.toLowerCase.take(1).toUpperCase) ++ (surname.toLowerCase.substring(1, surname.length))
+    def fullName(): String = {
+      checkName ++ " " ++ checkSurname
+    }
+  }
+  class Course(courseID: Int, title: String, var releaseYear: String, instructor: Instructor) {
+    def getID: Int = {
+     (courseID.toString ++: instructor.id.toString).toInt
+    }
+    def isTaughtBy(instructor: Instructor): Boolean = {
+      if (getID.toString.drop(1).toInt == instructor.id) true
+      else false
+    }
+  def copyCourse(newReleaseYear: String): Course = {
+    val releaseDate: Course = new Course(courseID, title, releaseYear = newReleaseYear, instructor)
+    releaseDate
+    }
+  }
+  println(course.getID)
+  println(course1.getID)
+  println(course.isTaughtBy(instructor1))
+  println(course1.isTaughtBy(instructor1))
+
+  val x = "sCALA"
+  val y = x.capitalize
+  println(y)
 }
