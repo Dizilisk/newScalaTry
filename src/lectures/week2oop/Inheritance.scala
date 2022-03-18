@@ -138,4 +138,26 @@ object Inheritance  extends App {
 
   notification.sendNotification()
   println(notification.event.trigger(s"trigger ${notification.eventName} event"))
+
+  trait PublicConn {
+    def showNotification: String
+
+  }
+
+trait PrivateConn {
+  def checkCredentials: Boolean
+}
+
+  class SomeDataSource(ds: String) extends BaseDataSource(ds) with PublicConn with PrivateConn {
+    val user = "Public User"
+
+    def connect: String = {
+      s"Public Data source, no password needed"
+    }
+
+    override def checkCredentials: Boolean = true
+
+    override def showNotification: String = s"This connection is public"
+  }
+
 }
