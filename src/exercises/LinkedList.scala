@@ -52,6 +52,5 @@ object LinkedList extends App {
   val list = new Log("m3", new Log("m2", new Log("m1", Empty)))
   val list1 = list.add("m4")
   val list2 = list1.add("m5")
-
   print(list2.all)
 }
