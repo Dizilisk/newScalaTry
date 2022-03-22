@@ -1,31 +1,57 @@
 package exercises
 
+import scala.annotation.tailrec
+
 object LinkedList extends App {
   abstract class LogList {
-    def last(): String = list.head
+    def last: String
 
-    def previous(): LogList = list.previous
+    def previous: LogList
 
-    def isEmpty: Boolean = {
-      if (list.head == Empty) true
-      else false
-    }
+    def isEmpty: Boolean
 
-    def all: String = list.toString
+    def all: String
 
-    def add(msg: String): LogList = list.add(msg)
-
+    def add(msg: String): LogList
   }
 
   object Empty extends LogList {
-    def add(msg: String): LogList = new Log(msg, Empty)
+    override def last: String = throw new NoSuchElementException
+
+    override def previous: LogList = throw new NoSuchElementException
+
+    override def isEmpty: Boolean = true
+
+    override def all: String = ""
+
+    override def add(msg: String): LogList = new Log(msg, Empty)
   }
 
-  class Log(val head: String, val tail: String) extends LogList {
-    def add(msg: String): LogList = new Log(msg, this)
+  class Log(val head: String, val tail: LogList) extends LogList {
+    override def last: String = head
+
+    override def previous: LogList = tail
+
+    override def isEmpty: Boolean = false
+
+    override def all: String = {
+      @tailrec
+      def loop(Empty: LogList, acc: String): String = {
+        if (Empty.isEmpty) acc
+        else {
+          loop(Empty = Empty.previous,
+            s"$acc " ++ Empty.last)
+        }
+      }
+      loop(tail, head)
+    }
+
+    override def add(msg: String): LogList = new Log(msg, this)
   }
 
-  val list = new Log("INFO_1", new Log("INFO_2", new Log("INFO_3", Empty)))
+  val list = new Log("m3", new Log("m2", new Log("m1", Empty)))
+  val list1 = list.add("m4")
+  val list2 = list1.add("m5")
 
-  println(list.all)
+  print(list2.all)
 }
