@@ -1,5 +1,5 @@
 package exercises
 
-object GenericList {
+object GenericList extends App {
 
 }
