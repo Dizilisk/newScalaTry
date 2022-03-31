@@ -53,4 +53,48 @@ object FunctionsFP extends App {
 
   val res3 = someFunc(1)
   println(res3)
+
+  /* Частичные функции */
+
+  val whatToDo = (d: String) => d match {
+    case "mon" => "Work!"
+    case "fri" => "Party time"
+    case "sun" => "Relax a little"
+  }
+
+  val aPartialFunction: PartialFunction[String, String] = {
+    case "mon" => "Work!"
+    case "fri" => "Party time"
+    case "sun" => "Relax a little"
+  }
+
+  val pfChain: PartialFunction[String, String] = aPartialFunction.orElse[String, String] {
+    case "sat" => "It's just Saturday"
+  }
+
+  val lifted = aPartialFunction.lift
+
+  println(aPartialFunction("sun"))
+//  println(aPartialFunction("sat")) // Match error
+  println(aPartialFunction.isDefinedAt("tue"))
+  println(pfChain("mon"))
+  println(pfChain("sat"))
+  println(lifted("fri"))
+  println(lifted("thu"))
+
+  val chat: PartialFunction[String, String] = {
+    case "hello" => "Hi, I'm Bot"
+    case "bye" => "Bye-bye"
+    case "what's up" => "sup-sup"
+  }
+
+  val chatbot = chat.lift
+
+  println(chatbot("hello"))
+  println(chatbot("bye"))
+  println(chatbot("what's up"))
+  println(chatbot("none"))
+
+  scala.io.Source.stdin.getLines().foreach(line => println(chatbot(line)))
+  scala.io.Source.stdin.getLines().map(chatbot).foreach(println)
 }
