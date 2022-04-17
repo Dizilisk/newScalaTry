@@ -6,7 +6,7 @@ object Collections extends App {
 
   val emptySet: Set[Int] = Set()
   val aSet = Set(10, 20, 30, 40)
-  val anotherSet = Set(30, 40, 50, 60)
+  val anotherSet = Set(60, 50, 40, 30)
 
   aSet.isEmpty // false
   emptySet.isEmpty  //true

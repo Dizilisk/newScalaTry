@@ -22,13 +22,13 @@ object ScalaPlayground {
 
     val page: Any = ???
 
-    def safeConnection(host: String, port: String): Try[Connection] = Try(HttpService(host, port))
+   /* def safeConnection(host: String, port: String): Try[Connection] = Try(HttpService(host, port))
 
     def safeUrl(url: String): Try[String] = Try(url)
 
     for {
         r1 <- safeConnection(host, port)
         r2 <- safeUrl(r1.get("url"))
-    } yield render(r1.get(r2))
+    } yield render(r1.get(r2))*/
 
 }
