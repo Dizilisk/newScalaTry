@@ -1,5 +1,7 @@
 package playground
 
+import com.sun.source.tree.BinaryTree
+
 import scala.annotation.tailrec
 
 object Trees extends App {
@@ -30,10 +32,15 @@ object Trees extends App {
       @tailrec
       def loop(toInspect: List[BinaryTree[T]] = List(this), result: List[BinaryTree[T]] = List()): List[BinaryTree[T]] = {
 
-          if (leftChild.isLeaf) loop(toInspect :+ leftChild :+ rightChild, result :+ leftChild)
-          else if (rightChild.isLeaf) loop(toInspect :+ leftChild :+ rightChild, result :+ rightChild)
-          else loop(leftChild + rightChild, result)
-        }
+        val current: BinaryTree[T] = toInspect.head
+        val l: BinaryTree[T] = current.leftChild
+        val r: BinaryTree[T] = current.rightChild
+
+        if (current.isEmpty) result
+        else if (l.isLeaf) loop(r.collectLeaves ++ l.collectLeaves, result)
+        else if (r.isLeaf) loop(l.collectLeaves ++ r.collectLeaves, result)
+        else loop(leftChild.collectLeaves ++ rightChild.collectLeaves, result)
+      }
 
       loop()
     }
