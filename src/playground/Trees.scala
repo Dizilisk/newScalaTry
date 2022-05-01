@@ -18,6 +18,8 @@ object Trees extends App {
     def countLeaves: Int
 
     def nodesAtLevel(level: Int): List[BinaryTree[T]]
+
+    def collectNodes(): List[T]
   }
 
   case class Node[+T](override val value: T,
@@ -56,18 +58,43 @@ object Trees extends App {
     override def nodesAtLevel(level: Int): List[BinaryTree[T]] = {
 
       @tailrec
-      def loopLevel(levelInspect: Int, lvl: List[BinaryTree[T]]): List[BinaryTree[T]] = {
-        if (levelInspect < 0) List()
-        else if (levelInspect == 0) List(lvl.head)
-        else {
-          val curr = lvl.head
-          val lc = curr.leftChild
-          val rc = curr.rightChild
+      def loop2(toIns: List[(Int, BinaryTree[T])], res: List[BinaryTree[T]], check: Int): List[BinaryTree[T]] = {
 
+        if (toIns.isEmpty) res
+        else {
+          val curr = toIns.head
+          val chk = curr._1
+          val lst = curr._2
+          if (chk > check) List()
+          else if (chk == check) loop2(toIns.tail, res :+ lst, check)
+          else {
+            val leftList: List[(Int, BinaryTree[T])] = if (lst.leftChild.isEmpty) List() else List((chk + 1, lst.leftChild))
+            val rightList: List[(Int, BinaryTree[T])] = if (lst.rightChild.isEmpty) List() else List((chk + 1, lst.rightChild))
+            loop2(toIns.tail ++ leftList ++ rightList, res, check)
+          }
         }
       }
+      loop2(List((0, this)), List(), level)
+    }
 
-      loopLevel(level, List(this))
+    override def collectNodes(): List[T] = {
+
+      val z = List(this.value)
+      @tailrec
+      def loop3(inspect: List[BinaryTree[T]], result: List[BinaryTree[T]]): List[T] = {
+
+        if (inspect.isEmpty) result.map(_.value) ++ z
+        else {
+          val collect: BinaryTree[T] = inspect.head
+
+          val left: BinaryTree[T] = collect.leftChild
+          val right: BinaryTree[T] = collect.rightChild
+          val l1 = if (left.isEmpty) List() else List(left)
+          val r1 = if (right.isEmpty) List() else List(right)
+          loop3(inspect.tail ++ l1 ++ r1, result ++ l1 ++ r1)
+        }
+      }
+      loop3(List(this), List())
     }
   }
 
@@ -87,10 +114,12 @@ object Trees extends App {
     override def countLeaves: Int = 0
 
     override def nodesAtLevel(level: Int) = List()
+
+    override def collectNodes(): List[Nothing] = List()
   }
 
   val tree = {
-    Node(10,
+    Node(1,
       Node(2,
         Node(4,
           TreeEnd,
@@ -112,7 +141,8 @@ object Trees extends App {
   val tree1 = Node(1, TreeEnd, TreeEnd)
   println(tree1.collectLeaves.map(_.value))
   println(tree.collectLeaves.map(_.value).sorted)
-  println(tree.nodesAtLevel(0).map(_.value).sorted)
+  println(tree.nodesAtLevel(2).map(_.value).sorted)
+  println(tree.collectNodes().sorted)
 
   class GrandParents
   class Parents extends GrandParents
