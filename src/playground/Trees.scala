@@ -74,8 +74,12 @@ object Trees extends App {
           if (chk > check) List()
           else if (chk == check) loop2(toIns.tail, res :+ lst, check)
           else {
-            val leftList: List[(Int, BinaryTree[T])] = if (lst.leftChild.isEmpty) List() else List((chk + 1, lst.leftChild))
-            val rightList: List[(Int, BinaryTree[T])] = if (lst.rightChild.isEmpty) List() else List((chk + 1, lst.rightChild))
+            val leftList: List[(Int, BinaryTree[T])] = {
+              if (lst.leftChild.isEmpty) List() else List((chk + 1, lst.leftChild))
+            }
+            val rightList: List[(Int, BinaryTree[T])] = {
+              if (lst.rightChild.isEmpty) List() else List((chk + 1, lst.rightChild))
+            }
             loop2(toIns.tail ++ leftList ++ rightList, res, check)
           }
         }
@@ -120,8 +124,12 @@ object Trees extends App {
           } else {
             if (sum > target) loop4(inspect.tail)
             else {
-              val leftList: List[(Int, BinaryTree[Int])] = if (chk.leftChild.isEmpty) List() else List((sum, chk.leftChild))
-              val rightList: List[(Int, BinaryTree[Int])] = if (chk.rightChild.isEmpty) List() else List((sum, chk.rightChild))
+              val leftList: List[(Int, BinaryTree[Int])] = {
+                if (chk.leftChild.isEmpty) List() else List((sum, chk.leftChild))
+              }
+              val rightList: List[(Int, BinaryTree[Int])] = {
+                if (chk.rightChild.isEmpty) List() else List((sum, chk.rightChild))
+              }
               loop4(inspect.tail ++ leftList ++ rightList)
             }
           }
@@ -144,8 +152,12 @@ object Trees extends App {
             if (target.toInt == lst.map(_.toInt).sum) loop5(inspect.tail, acc :+ lst)
             else loop5(inspect.tail, acc)
           } else {
-            val leftList: List[(List[String], BinaryTree[String])] = if (chk.leftChild.isEmpty) List() else List((lst, chk.leftChild))
-            val rightList: List[(List[String], BinaryTree[String])] = if (chk.rightChild.isEmpty) List() else List((lst, chk.rightChild))
+            val leftList: List[(List[String], BinaryTree[String])] = {
+              if (chk.leftChild.isEmpty) List() else List((lst, chk.leftChild))
+            }
+            val rightList: List[(List[String], BinaryTree[String])] = {
+              if (chk.rightChild.isEmpty) List() else List((lst, chk.rightChild))
+            }
             loop5(inspect.tail ++ leftList ++ rightList, acc)
           }
         }
