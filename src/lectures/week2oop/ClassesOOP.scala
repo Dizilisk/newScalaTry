@@ -51,8 +51,12 @@ object ClassesOOP extends App {
   val course1 = new Course(5, "kurs1", "15", instructor2)
 
   class Instructor(val id: Int, name: String, surname: String) {
-    val checkName: String = (name.toLowerCase.take(1).toUpperCase) ++ (name.toLowerCase.substring(1, name.length))
-    val checkSurname: String = (surname.toLowerCase.take(1).toUpperCase) ++ (surname.toLowerCase.substring(1, surname.length))
+    val checkName: String = {
+      name.toLowerCase.take(1).toUpperCase ++ name.toLowerCase.substring(1, name.length)
+    }
+    val checkSurname: String = {
+      surname.toLowerCase.take(1).toUpperCase ++ surname.toLowerCase.substring(1, surname.length)
+    }
     def fullName(): String = {
       checkName ++ " " ++ checkSurname
     }
