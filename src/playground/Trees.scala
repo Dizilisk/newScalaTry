@@ -12,14 +12,20 @@ object Trees extends App {
     def rightChild: BinaryTree[T] // правый потомок
 
     def isEmpty: Boolean
+
     def isLeaf: Boolean
 
     def collectLeaves: List[BinaryTree[T]]
+
     def countLeaves: Int
 
     def nodesAtLevel(level: Int): List[BinaryTree[T]]
 
     def collectNodes(): List[T]
+
+    def hasPath(tree: BinaryTree[Int], target: Int): Boolean
+
+    def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]]
   }
 
   case class Node[+T](override val value: T,
@@ -74,12 +80,14 @@ object Trees extends App {
           }
         }
       }
+
       loop2(List((0, this)), List(), level)
     }
 
     override def collectNodes(): List[T] = {
 
       val z = List(this.value)
+
       @tailrec
       def loop3(inspect: List[BinaryTree[T]], result: List[BinaryTree[T]]): List[T] = {
 
@@ -94,7 +102,56 @@ object Trees extends App {
           loop3(inspect.tail ++ l1 ++ r1, result ++ l1 ++ r1)
         }
       }
+
       loop3(List(this), List())
+    }
+
+    override def hasPath(tree: BinaryTree[Int], target: Int): Boolean = {
+      @tailrec
+      def loop4(inspect: List[(Int, BinaryTree[Int])]): Boolean = {
+        if (inspect.isEmpty || tree.isEmpty) false
+        else {
+          val curr = inspect.head
+          val chk = curr._2
+          val sum = curr._1 + chk.value
+          if (chk.isLeaf) {
+            if (target == sum) true
+            else loop4(inspect.tail)
+          } else {
+            if (sum > target) loop4(inspect.tail)
+            else {
+              val leftList: List[(Int, BinaryTree[Int])] = if (chk.leftChild.isEmpty) List() else List((sum, chk.leftChild))
+              val rightList: List[(Int, BinaryTree[Int])] = if (chk.rightChild.isEmpty) List() else List((sum, chk.rightChild))
+              loop4(inspect.tail ++ leftList ++ rightList)
+            }
+          }
+        }
+      }
+
+      loop4(List((0, tree)))
+    }
+
+    override def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]] = {
+
+      @tailrec
+      def loop5(inspect: List[(List[String], BinaryTree[String])], acc: List[List[String]]): List[List[String]] = {
+        if (inspect.isEmpty || tree.isEmpty) acc.reverse
+        else {
+          val curr = inspect.head
+          val chk = curr._2
+          val lst = curr._1 :+ chk.value
+          if (chk.isLeaf) {
+            if (target.toInt == lst.map(_.toInt).sum) loop5(inspect.tail, acc :+ lst)
+            else loop5(inspect.tail, acc)
+          } else {
+            val leftList: List[(List[String], BinaryTree[String])] = if (chk.leftChild.isEmpty) List() else List((lst, chk.leftChild))
+            val rightList: List[(List[String], BinaryTree[String])] = if (chk.rightChild.isEmpty) List() else List((lst, chk.rightChild))
+            loop5(inspect.tail ++ leftList ++ rightList, acc)
+          }
+        }
+      }
+
+      loop5(List((List(), tree)), List())
     }
   }
 
@@ -113,9 +170,13 @@ object Trees extends App {
 
     override def countLeaves: Int = 0
 
-    override def nodesAtLevel(level: Int) = List()
+    override def nodesAtLevel(level: Int): List[Nothing] = List()
 
     override def collectNodes(): List[Nothing] = List()
+
+    override def hasPath(tree: BinaryTree[Int], target: Int): Boolean = false
+
+    override def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]] = List()
   }
 
   val tree = {
@@ -139,23 +200,69 @@ object Trees extends App {
   }
 
   val tree1 = Node(1, TreeEnd, TreeEnd)
+
+  val tree2 = Node("1",
+    Node("2",
+      Node("4",
+        TreeEnd,
+        TreeEnd),
+      Node("5",
+        TreeEnd,
+        Node("8",
+          TreeEnd,
+          TreeEnd))),
+    Node("3",
+      Node("6",
+        TreeEnd,
+        TreeEnd),
+      Node("7",
+        TreeEnd,
+        TreeEnd))
+  )
+
+  val tree3 = Node("1",
+    Node("12",
+      Node("4",
+        TreeEnd,
+        Node("8",
+          TreeEnd,
+          TreeEnd)),
+      Node("5",
+        Node("7",
+          TreeEnd,
+          TreeEnd),
+        TreeEnd)),
+    Node("3",
+      Node("6",
+        Node("15",
+          TreeEnd,
+          TreeEnd),
+        TreeEnd),
+      Node("7",
+        TreeEnd,
+        TreeEnd))
+  )
+
   println(tree1.collectLeaves.map(_.value))
   println(tree.collectLeaves.map(_.value).sorted)
   println(tree.nodesAtLevel(2).map(_.value).sorted)
   println(tree.collectNodes().sorted)
+  println(tree.hasPath(TreeEnd, 7))
+  println(tree3.findAllPaths(tree3, "25"))
 
   class GrandParents
+
   class Parents extends GrandParents
 
   class Child extends Parents
 
-//  class Family[+T]
+  //  class Family[+T]
 
-//  val covariantFamily: Family[Parents] = new Family[Child]
-//  val someFamily: Family[Parents] = new Family[GrandParents] // ошибка
+  //  val covariantFamily: Family[Parents] = new Family[Child]
+  //  val someFamily: Family[Parents] = new Family[GrandParents] // ошибка
 
-//  class Family[-T]
+  //  class Family[-T]
 
-//  val contravariantFamily: Family[Parents] = new Family[GrandParents]
-//  val someFamily: Family[Parents] = new Family[Child] // ошибка
+  //  val contravariantFamily: Family[Parents] = new Family[GrandParents]
+  //  val someFamily: Family[Parents] = new Family[Child] // ошибка
 }
